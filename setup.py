@@ -26,7 +26,8 @@ INSTALL_REQUIRES = [
 ]
 TESTS_REQUIRE = [
     'pylama',
-    'tox'
+    'tox',
+    'python-dotenv'
 ]
 README = read('README.md')
 VERSION = read(PACKAGE, 'VERSION')

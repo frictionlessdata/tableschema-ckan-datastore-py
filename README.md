@@ -47,6 +47,13 @@ Package implements [Tabular Storage](https://github.com/frictionlessdata/tablesc
 
 ![Storage](https://i.imgur.com/RQgrxqp.png)
 
+This driver provides an additional API:
+
+#### `Storage(base_url, dataset_id=None, api_key=None)`
+- `base_url (str)` - the base url (and scheme) for the CKAN instance (e.g. http://demo.ckan.org).
+- `dataset_id (str)` - id or name of the CKAN dataset we wish to use as the bucket source. If missing, all tables in the DataStore are used.
+- `api_key (str)` - either a CKAN user api key or, if in the format `env:CKAN_API_KEY_NAME`, an env var that defines an api key.
+
 ## Contributing
 
 The project follows the [Open Knowledge International coding standards](https://github.com/okfn/coding-standards).
