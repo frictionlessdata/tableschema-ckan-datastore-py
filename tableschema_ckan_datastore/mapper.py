@@ -4,6 +4,8 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import tableschema
+
 import logging
 log = logging.getLogger(__name__)
 
@@ -13,6 +15,53 @@ log = logging.getLogger(__name__)
 class Mapper(object):
 
     # Public
+
+    def descriptor_to_datastore_dict(self, descriptor, bucket):
+        '''
+        Return a datastore dict from a table schema descriptor.
+        '''
+        schema = tableschema.Schema(descriptor)
+        datastore_dict = {
+            'fields': [],
+            'resource_id': bucket,
+            'force': True
+        }
+        for field in schema.fields:
+            datastore_field = {
+                'id': field.name
+            }
+            datastore_type = self.descritor_type_to_datastore_type(field.type)
+            if datastore_type:
+                datastore_field['type'] = datastore_type
+            datastore_dict['fields'].append(datastore_field)
+
+        pk = descriptor.get('primaryKey', None)
+        if pk is not None:
+            datastore_dict['primary_key'] = pk
+        return datastore_dict
+
+    def descritor_type_to_datastore_type(self, type):
+        '''
+        Return a DataStore field type from a table schema descriptor type.
+        '''
+        DESCRIPTOR_TYPE_MAPPING = {
+            'number': 'float',
+            'string': 'text',
+            'integer': 'int',
+            'boolean': 'bool',
+            'object': 'json',
+            'array': 'text[]',
+            'geojson': 'json',
+            'date': 'date',
+            'time': 'time',
+            'datetime': 'timestamp',
+        }
+        try:
+            return DESCRIPTOR_TYPE_MAPPING[type]
+        except KeyError as e:
+            log.warn(
+                'Unsupported descriptor type \'{}\'.'.format(type))
+            return None
 
     def datastore_fields_to_descriptor(self, fields):
         '''

@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import six
 import json
 import tableschema
 
@@ -79,15 +80,68 @@ class Storage(tableschema.Storage):
                 break
         return buckets
 
-    def create(self, bucket, descriptor, force=False, indexes_fields=None):
-        pass
-    #     """https://github.com/frictionlessdata/tableschema-sql-py#storage
-    #     """
+    def create(self, bucket, descriptor, force=False):
+        """https://github.com/frictionlessdata/tableschema-sql-py#storage
+        """
+
+        # Make lists
+        buckets = bucket
+        if isinstance(bucket, six.string_types):
+            buckets = [bucket]
+        descriptors = descriptor
+        if isinstance(descriptor, dict):
+            descriptors = [descriptor]
+
+        # Check buckets for existence
+        for bucket in reversed(self.buckets):
+            if bucket in buckets:
+                if not force:
+                    message = 'Bucket "%s" already exists.' % bucket
+                    raise tableschema.exceptions.StorageError(message)
+                self.delete(bucket)
+
+        # Iterate over buckets/descriptors
+        for bucket, descriptor in zip(buckets, descriptors):
+            # Define resources
+            tableschema.validate(descriptor)
+            self.__descriptors[bucket] = descriptor
+            datastore_dict = \
+                self.__mapper.descriptor_to_datastore_dict(descriptor, bucket)
+            datastore_create_url = \
+                "{}/datastore_create".format(self.__base_endpoint)
+            self._make_ckan_request(datastore_create_url, method='POST',
+                                    json=datastore_dict)
 
     def delete(self, bucket=None, ignore=False):
-        pass
-    #     """https://github.com/frictionlessdata/tableschema-sql-py#storage
-    #     """
+        """https://github.com/frictionlessdata/tableschema-sql-py#storage
+        """
+        # Make lists
+        buckets = bucket
+        if isinstance(bucket, six.string_types):
+            buckets = [bucket]
+        elif bucket is None:
+            buckets = reversed(self.buckets)
+
+        for bucket in buckets:
+            # Check existent
+            if bucket not in self.buckets:
+                if not ignore:
+                    message = 'Bucket "%s" doesn\'t exist.' % bucket
+                    raise tableschema.exceptions.StorageError(message)
+                return
+
+            # Remove from buckets
+            if bucket in self.__descriptors:
+                del self.__descriptors[bucket]
+
+            datastore_delete_url = \
+                "{}/datastore_delete".format(self.__base_endpoint)
+            params = {
+                'resource_id': bucket,
+                'force': True
+            }
+            self._make_ckan_request(datastore_delete_url, method='POST',
+                                    json=params)
 
     def describe(self, bucket, descriptor=None):
         """https://github.com/frictionlessdata/tableschema-sql-py#storage
