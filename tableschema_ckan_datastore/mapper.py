@@ -83,11 +83,20 @@ class Mapper(object):
 
         return {'fields': ts_fields}
 
-    def datastore_field_type_to_schema_type(self, type):
+    def datastore_field_type_to_schema_type(self, dstore_type):
+        '''
+        For a given datastore type, return the corresponding schema type.
+
+        datastore int and float may have a trailing digit, which is stripped.
+
+        datastore arrays begin with an '_'.
+        '''
+        dstore_type = dstore_type.rstrip('0123456789')
+        if dstore_type.startswith('_'):
+            dstore_type = 'array'
         DATASTORE_TYPE_MAPPING = {
-            'int2': ('integer', None),
-            'int4': ('integer', None),
-            'int8': ('integer', None),
+            'int': ('integer', None),
+            'float': ('number', None),
             'smallint': ('integer', None),
             'bigint': ('integer', None),
             'integer': ('integer', None),
@@ -102,15 +111,16 @@ class Mapper(object):
             'char': ('string', None),
             'uuid': ('string', 'uuid'),
             'boolean': ('boolean', None),
+            'bool': ('boolean', None),
             'json': ('object', None),
             'jsonb': ('object', None),
             'array': ('array', None)
         }
         try:
-            return DATASTORE_TYPE_MAPPING[type]
+            return DATASTORE_TYPE_MAPPING[dstore_type]
         except KeyError:
             log.warn('Unsupported DataStore type \'{}\'. Using \'string\'.'
-                     .format(type))
+                     .format(dstore_type))
             return ('string', None)
 
     def restore_row(self, record, schema):
