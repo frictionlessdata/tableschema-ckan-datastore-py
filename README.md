@@ -27,14 +27,19 @@ Code examples in this readme requires Python 3.3+ interpreter. You could see eve
 
 ```python
 from tableschema import Table
-# from sqlalchemy import create_engine
 
-# ::TODO:: appropriate example for datastore
+# Load and save CKAN DataStore record
+resource_id = 'bd79c992-40f0-454a-a0ff-887f84a792fb'
+base_url = 'https://demo.ckan.org'
+dataset_id = 'test-dataset-010203'
+api_key = 'my-ckan-user-api-key'
 
-# Load and save table to SQL
-# engine = create_engine('sqlite://')
-# table = Table('data.csv', schema='schema.json')
-# table.save('data', storage='sql', engine=engine)
+table = Table('data.csv', schema='schema.json')
+table.save(resource_id,
+           storage='ckan_datastore',
+           base_url=base_url,
+           dataset_id=dataset_id,
+           api_key=api_key)
 ```
 
 ## Documentation
