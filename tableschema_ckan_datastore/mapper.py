@@ -4,6 +4,9 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
+import six
+import json
+import dateutil
 import tableschema
 
 import logging
@@ -54,7 +57,8 @@ class Mapper(object):
             'geojson': 'json',
             'date': 'date',
             'time': 'time',
-            'datetime': 'timestamp',
+            'year': 'int',
+            'datetime': 'timestamp'
         }
         try:
             return DESCRIPTOR_TYPE_MAPPING[type]
@@ -69,6 +73,9 @@ class Mapper(object):
         '''
         ts_fields = []
         for f in fields:
+            # Don't include datastore internal field '_id'.
+            if f['id'] == '_id':
+                continue
             datastore_type = f['type']
             datastore_id = f['id']
             ts_type, ts_format = \
@@ -128,5 +135,32 @@ class Mapper(object):
         """
         row = {}
         for field in schema.fields:
-            row[field.name] = field.cast_value(record[field.name])
+            value = record[field.name]
+            if field.type == 'datetime' and value is not None:
+                value = dateutil.parser.parse(value)
+            row[field.name] = field.cast_value(value)
         return row
+
+    def convert_row(self, row, schema):
+        """Convert row to DataStore record
+        """
+        record = {}
+        for i, f in enumerate(schema.fields):
+            value = self._uncast_value(row[i], f)
+            record[f.name] = value
+        return record
+
+    def _uncast_value(self, value, field):
+        if field.type in ['integer',
+                          'number',
+                          'year',
+                          'date',
+                          'datetime',
+                          'time'] and value == '':
+            return None
+        if field.type in ['array', 'object', 'geojson']:
+            if isinstance(value, six.string_types) and value is not '':
+                return json.loads(value)
+            else:
+                return None
+        return value

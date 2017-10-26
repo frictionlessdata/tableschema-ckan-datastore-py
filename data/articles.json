@@ -35,8 +35,7 @@
         },
         {
             "name": "created_year",
-            "type": "date",
-            "format": "%Y"
+            "type": "year"
         },
         {
             "name": "created_date",
@@ -62,6 +61,5 @@
             "name": "location",
             "type": "geojson"
         }
-
     ]
 }

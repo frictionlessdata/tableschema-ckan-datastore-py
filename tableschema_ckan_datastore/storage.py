@@ -195,11 +195,23 @@ class Storage(tableschema.Storage):
         rows = list(self.iter(bucket))
         return rows
 
-    def write(self, bucket, rows, keyed=False, as_generator=False,
-              update_keys=None):
-        pass
-    #     """https://github.com/frictionlessdata/tableschema-sql-py#storage
-    #     """
+    def write(self, bucket, rows, method="upsert"):
+        """https://github.com/frictionlessdata/tableschema-sql-py#storage
+        """
+        schema = tableschema.Schema(self.describe(bucket))
+        datastore_upsert_url = \
+            "{}/datastore_upsert".format(self.__base_endpoint)
+        records = []
+        for r in rows:
+            records.append(self.__mapper.convert_row(r, schema))
+        params = {
+            'resource_id': bucket,
+            'method': method,
+            'force': True,
+            'records': records
+        }
+        self._make_ckan_request(datastore_upsert_url, method='POST',
+                                json=params)
 
     # Private
 
