@@ -62,7 +62,7 @@ class Mapper(object):
         }
         try:
             return DESCRIPTOR_TYPE_MAPPING[type]
-        except KeyError as e:
+        except KeyError:
             log.warn(
                 'Unsupported descriptor type \'{}\'.'.format(type))
             return None

@@ -34,7 +34,7 @@ def get_ckan_error(response):
     try:
         if not response['success'] and response['error']:
             ckan_error = response['error']
-    except TypeError as e:
+    except TypeError:
         ckan_error = response
 
     return ckan_error
