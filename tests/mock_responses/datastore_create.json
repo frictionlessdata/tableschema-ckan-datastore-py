@@ -1,0 +1,59 @@
+{
+  "help": "https://demo.ckan.org/api/3/action/help_show?name=datastore_create",
+  "success": true,
+  "result": {
+    "primary_key": "id",
+    "resource_id": "79843e49-7974-411c-8eb5-fb2d1111d707",
+    "fields": [
+      {
+        "type": "int",
+        "id": "id"
+      },
+      {
+        "type": "int",
+        "id": "parent"
+      },
+      {
+        "type": "text",
+        "id": "name"
+      },
+      {
+        "type": "bool",
+        "id": "current"
+      },
+      {
+        "type": "float",
+        "id": "rating"
+      },
+      {
+        "type": "int",
+        "id": "created_year"
+      },
+      {
+        "type": "date",
+        "id": "created_date"
+      },
+      {
+        "type": "time",
+        "id": "created_time"
+      },
+      {
+        "type": "timestamp",
+        "id": "created_datetime"
+      },
+      {
+        "type": "json",
+        "id": "stats"
+      },
+      {
+        "type": "text[]",
+        "id": "persons"
+      },
+      {
+        "type": "json",
+        "id": "location"
+      }
+    ],
+    "method": "insert"
+  }
+}

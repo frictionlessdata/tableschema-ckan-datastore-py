@@ -1,0 +1,70 @@
+{
+  "help": "https://demo.ckan.org/api/3/action/help_show?name=datastore_upsert",
+  "success": true,
+  "result": {
+    "records": [
+      {
+        "rating": "9.5",
+        "stats": [
+          "{\"chars\": 560, \"height\": 54.8}",
+          ""
+        ],
+        "name": "Taxes",
+        "parent": null,
+        "created_datetime": "2015-01-01T03:00:00Z",
+        "current": "True",
+        "created_year": "2015",
+        "persons": [
+          "mike",
+          "alice"
+        ],
+        "location": [
+          "{\"type\": \"Point\", \"coordinates\": [50.0, 50.0]}",
+          ""
+        ],
+        "created_date": "2015-01-01",
+        "created_time": "03:00:00",
+        "id": "1"
+      },
+      {
+        "rating": "7",
+        "stats": [
+          "{\"chars\": 970, \"height\": 40}",
+          ""
+        ],
+        "name": "中国人",
+        "parent": "1",
+        "created_datetime": "2015-12-31T15:45:33Z",
+        "current": "False",
+        "created_year": "2015",
+        "persons": [
+          "chen",
+          "alice"
+        ],
+        "location": [
+          "{\"type\": \"Point\", \"coordinates\": [33.33, 33.33]}",
+          ""
+        ],
+        "created_date": "2015-12-31",
+        "created_time": "15:45:33",
+        "id": "2"
+      },
+      {
+        "rating": null,
+        "stats": null,
+        "name": "",
+        "parent": "1",
+        "created_datetime": null,
+        "current": "False",
+        "created_year": null,
+        "persons": null,
+        "location": null,
+        "created_date": null,
+        "created_time": null,
+        "id": "3"
+      }
+    ],
+    "method": "upsert",
+    "resource_id": "79843e49-7974-411c-8eb5-fb2d1111d707"
+  }
+}
