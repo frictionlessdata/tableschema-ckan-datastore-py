@@ -33,6 +33,7 @@ class Storage(tableschema.Storage):
         self.__api_key = api_key
         self.__descriptors = {}
         self.__max_pages = 10
+        self.__bucket_cache = None
 
         # Create mapper
         self.__mapper = Mapper()
@@ -51,6 +52,9 @@ class Storage(tableschema.Storage):
     def buckets(self):
         """https://github.com/frictionlessdata/tableschema-sql-py#storage
         """
+        if self.__bucket_cache:
+            return self.__bucket_cache
+
         params = {
             'resource_id': '_table_metadata'
         }
@@ -78,6 +82,7 @@ class Storage(tableschema.Storage):
                 log.warn("Max bucket count exceeded. {} buckets returned."
                          .format(len(buckets)))
                 break
+        self.__bucket_cache = buckets
         return buckets
 
     def create(self, bucket, descriptor, force=False):
@@ -112,6 +117,9 @@ class Storage(tableschema.Storage):
             self._make_ckan_request(datastore_create_url, method='POST',
                                     json=datastore_dict)
 
+        # Invalidate cache
+        self.__bucket_cache = None
+
     def delete(self, bucket=None, ignore=False):
         """https://github.com/frictionlessdata/tableschema-sql-py#storage
         """
@@ -142,6 +150,9 @@ class Storage(tableschema.Storage):
             }
             self._make_ckan_request(datastore_delete_url, method='POST',
                                     json=params)
+
+        # Invalidate cache
+        self.__bucket_cache = None
 
     def describe(self, bucket, descriptor=None):
         """https://github.com/frictionlessdata/tableschema-sql-py#storage
