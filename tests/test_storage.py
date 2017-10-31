@@ -21,7 +21,7 @@ class TestStorage(unittest.TestCase):
 
     def setUp(self):
         # Create storage
-        base_url = 'https://demo.ckan.org'
+        base_url = 'https://demo.ckan.org/'
         self.storage = Storage(base_url=base_url,
                                dataset_id='my-dataset-id',
                                api_key='env:CKAN_API_KEY')

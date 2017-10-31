@@ -27,7 +27,7 @@ class Storage(tableschema.Storage):
 
         # Set attributes
         base_path = "/api/3/action"
-        self.__base_url = base_url
+        self.__base_url = base_url.rstrip('/')
         self.__base_endpoint = self.__base_url + base_path
         self.__dataset_id = dataset_id
         self.__api_key = api_key
