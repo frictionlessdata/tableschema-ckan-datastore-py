@@ -2,7 +2,7 @@
 
 [![Travis](https://img.shields.io/travis/frictionlessdata/tableschema-ckan-datastore-py/master.svg)](https://travis-ci.org/frictionlessdata/tableschema-ckan-datastore-py)
 [![Coveralls](http://img.shields.io/coveralls/frictionlessdata/tableschema-ckan-datastore-py/master.svg)](https://coveralls.io/r/frictionlessdata/tableschema-ckan-datastore-py?branch=master)
-[![PyPi](https://img.shields.io/pypi/v/tableschema-ckan-datastore-py.svg)](https://pypi.python.org/pypi/tableschema-ckan-datastore-py)
+[![PyPi](https://img.shields.io/pypi/v/tableschema-ckan-datastore.svg)](https://pypi.python.org/pypi/tableschema-ckan-datastore)
 [![Gitter](https://img.shields.io/gitter/room/frictionlessdata/chat.svg)](https://gitter.im/frictionlessdata/chat)
 
 Generate and load CKAN DataStore tables based on [Table Schema](http://specs.frictionlessdata.io/table-schema/) descriptors.
