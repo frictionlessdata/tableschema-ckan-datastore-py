@@ -21,8 +21,8 @@ def read(*paths):
 PACKAGE = 'tableschema_ckan_datastore'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
-    'six>=1.9,<2.0',
-    'tableschema>=1.0,<2.0'
+    'six>=1.9',
+    'tableschema>=1.0'
 ]
 TESTS_REQUIRE = [
     'pylama',
@@ -45,6 +45,7 @@ setup(
     extras_require={'develop': TESTS_REQUIRE},
     zip_safe=False,
     long_description=README,
+    long_description_content_type='text/markdown',
     description='Generate CKAN DataStore tables, load and extract data, based on Table Schema descriptors.',
     author='Open Knowledge International',
     author_email='info@okfn.org',

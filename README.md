@@ -3,6 +3,7 @@
 [![Travis](https://img.shields.io/travis/frictionlessdata/tableschema-ckan-datastore-py/master.svg)](https://travis-ci.org/frictionlessdata/tableschema-ckan-datastore-py)
 [![Coveralls](http://img.shields.io/coveralls/frictionlessdata/tableschema-ckan-datastore-py/master.svg)](https://coveralls.io/r/frictionlessdata/tableschema-ckan-datastore-py?branch=master)
 [![PyPi](https://img.shields.io/pypi/v/tableschema-ckan-datastore.svg)](https://pypi.python.org/pypi/tableschema-ckan-datastore)
+[![Github](https://img.shields.io/badge/github-master-brightgreen)](https://github.com/frictionlessdata/tableschema-ckan-datastore-py)
 [![Gitter](https://img.shields.io/gitter/room/frictionlessdata/chat.svg)](https://gitter.im/frictionlessdata/chat)
 
 Generate and load CKAN DataStore tables based on [Table Schema](http://specs.frictionlessdata.io/table-schema/) descriptors.
@@ -10,6 +11,21 @@ Generate and load CKAN DataStore tables based on [Table Schema](http://specs.fri
 ## Features
 
 - implements `tableschema.Storage` interface
+
+## Contents
+
+<!--TOC-->
+
+  - [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Examples](#examples)
+  - [Documentation](#documentation)
+    - [Storage](#storage)
+  - [Contributing](#contributing)
+  - [Changelog](#changelog)
+    - [v0.x](#v0x)
+
+<!--TOC-->
 
 ## Getting Started
 
