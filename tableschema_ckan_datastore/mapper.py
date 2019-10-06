@@ -159,7 +159,7 @@ class Mapper(object):
                           'time'] and value == '':
             return None
         if field.type in ['array', 'object', 'geojson']:
-            if isinstance(value, six.string_types) and value is not '':
+            if isinstance(value, six.string_types) and value != '':
                 return json.loads(value)
             else:
                 return None
