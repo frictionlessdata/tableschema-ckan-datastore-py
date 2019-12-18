@@ -35,7 +35,7 @@ class Storage(tableschema.Storage):
             id or name of the CKAN dataset we wish to use as the bucket source.
             If missing, all tables in the DataStore are used.
         api_key (str):
-            either a CKAN user api key or, if in the format `env:CKAN_API_KEY_NAME`,
+            either a CKAN user api key or, if in the format `env\\:CKAN_API_KEY_NAME`,
             an env var that defines an api key.
 
     """

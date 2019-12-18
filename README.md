@@ -105,7 +105,7 @@ __Arguments__
         id or name of the CKAN dataset we wish to use as the bucket source.
         If missing, all tables in the DataStore are used.
 - __api_key (str)__:
-- __either a CKAN user api key or, if in the format `env__:CKAN_API_KEY_NAME`,
+        either a CKAN user api key or, if in the format `env:CKAN_API_KEY_NAME`,
         an env var that defines an api key.
 
 
