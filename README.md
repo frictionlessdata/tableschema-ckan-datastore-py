@@ -18,9 +18,9 @@ Generate and load CKAN DataStore tables based on [Table Schema](http://specs.fri
 
   - [Getting Started](#getting-started)
     - [Installation](#installation)
-    - [Examples](#examples)
   - [Documentation](#documentation)
-    - [Storage](#storage)
+  - [API Reference](#api-reference)
+    - [`Storage`](#storage)
   - [Contributing](#contributing)
   - [Changelog](#changelog)
 
@@ -36,9 +36,7 @@ The package use semantic versioning. It means that major versions  could include
 pip install tableschema-ckan-datastore
 ```
 
-### Examples
-
-Code examples in this readme requires Python 3.3+ interpreter. You could see even more example in [examples](https://github.com/frictionlessdata/tableschema-ckan-datastore-py/tree/master/examples) directory.
+## Documentation
 
 When writing data, tableschema-ckan-datastore uses the [CKAN API `datastore_upsert` endpoint](https://ckan.readthedocs.io/en/latest/maintaining/datastore.html#ckanext.datastore.logic.action.datastore_upsert) with the `upsert` method. This requires a unique key in the data defined by a [Table Schema primary key property](https://specs.frictionlessdata.io/table-schema/#primary-key). If your data has a primary key, you can use the `table.save` method:
 
@@ -84,22 +82,32 @@ storage.create(resource_id, schema, force=True))
 storage.write(resource_id, data, method='insert')  # specify the datastore_upsert method
 ```
 
-## Documentation
+## API Reference
 
-The whole public API of this package is described here and follows semantic versioning rules. Everything outside of this readme are private API and could be changed without any notification on any new version.
+### `Storage`
+```python
+Storage(self, base_url, dataset_id=None, api_key=None)
+```
+BigQuery storage
 
-### Storage
-
-Package implements [Tabular Storage](https://github.com/frictionlessdata/tableschema-py#storage) interface (see full documentation on the link):
+Package implements
+[Tabular Storage](https://github.com/frictionlessdata/tableschema-py#storage)
+interface (see full documentation on the link):
 
 ![Storage](https://i.imgur.com/RQgrxqp.png)
 
-This driver provides an additional API:
+> Only additional API is documented
 
-#### `Storage(base_url, dataset_id=None, api_key=None)`
-- `base_url (str)` - the base url (and scheme) for the CKAN instance (e.g. http://demo.ckan.org).
-- `dataset_id (str)` - id or name of the CKAN dataset we wish to use as the bucket source. If missing, all tables in the DataStore are used.
-- `api_key (str)` - either a CKAN user api key or, if in the format `env:CKAN_API_KEY_NAME`, an env var that defines an api key.
+__Arguments__
+- __base_url (str)__:
+- __the base url (and scheme) for the CKAN instance (e.g. http__://demo.ckan.org).
+- __dataset_id (str)__:
+        id or name of the CKAN dataset we wish to use as the bucket source.
+        If missing, all tables in the DataStore are used.
+- __api_key (str)__:
+- __either a CKAN user api key or, if in the format `env__:CKAN_API_KEY_NAME`,
+        an env var that defines an api key.
+
 
 ## Contributing
 

@@ -18,12 +18,31 @@ log = logging.getLogger(__name__)
 # Module API
 
 class Storage(tableschema.Storage):
+    """BigQuery storage
+
+    Package implements
+    [Tabular Storage](https://github.com/frictionlessdata/tableschema-py#storage)
+    interface (see full documentation on the link):
+
+    ![Storage](https://i.imgur.com/RQgrxqp.png)
+
+    > Only additional API is documented
+
+    # Arguments
+        base_url (str):
+            the base url (and scheme) for the CKAN instance (e.g. http://demo.ckan.org).
+        dataset_id (str):
+            id or name of the CKAN dataset we wish to use as the bucket source.
+            If missing, all tables in the DataStore are used.
+        api_key (str):
+            either a CKAN user api key or, if in the format `env:CKAN_API_KEY_NAME`,
+            an env var that defines an api key.
+
+    """
 
     # Public
 
     def __init__(self, base_url, dataset_id=None, api_key=None):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
 
         # Set attributes
         base_path = "/api/3/action"
@@ -39,8 +58,6 @@ class Storage(tableschema.Storage):
         self.__mapper = Mapper()
 
     def __repr__(self):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
 
         # Template and format
         template = 'Storage <{base_url}>'
@@ -50,8 +67,6 @@ class Storage(tableschema.Storage):
 
     @property
     def buckets(self):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
         if self.__bucket_cache:
             return self.__bucket_cache
 
@@ -86,8 +101,6 @@ class Storage(tableschema.Storage):
         return buckets
 
     def create(self, bucket, descriptor, force=False):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
 
         # Make lists
         buckets = bucket
@@ -121,8 +134,6 @@ class Storage(tableschema.Storage):
         self.__bucket_cache = None
 
     def delete(self, bucket=None, ignore=False):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
         # Make lists
         buckets = bucket
         if isinstance(bucket, six.string_types):
@@ -155,8 +166,6 @@ class Storage(tableschema.Storage):
         self.__bucket_cache = None
 
     def describe(self, bucket, descriptor=None):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
 
         # Set descriptor
         if descriptor is not None:
@@ -182,8 +191,6 @@ class Storage(tableschema.Storage):
         return descriptor
 
     def iter(self, bucket):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
         schema = tableschema.Schema(self.describe(bucket))
 
         datastore_search_url = \
@@ -201,14 +208,10 @@ class Storage(tableschema.Storage):
             response = self._make_ckan_request(next_url)
 
     def read(self, bucket):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
         rows = list(self.iter(bucket))
         return rows
 
     def write(self, bucket, rows, method="upsert"):
-        """https://github.com/frictionlessdata/tableschema-sql-py#storage
-        """
         schema = tableschema.Schema(self.describe(bucket))
         datastore_upsert_url = \
             "{}/datastore_upsert".format(self.__base_endpoint)
