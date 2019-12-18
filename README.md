@@ -88,7 +88,7 @@ storage.write(resource_id, data, method='insert')  # specify the datastore_upser
 ```python
 Storage(self, base_url, dataset_id=None, api_key=None)
 ```
-BigQuery storage
+Ckan Datastore storage
 
 Package implements
 [Tabular Storage](https://github.com/frictionlessdata/tableschema-py#storage)

@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 # Module API
 
 class Storage(tableschema.Storage):
-    """BigQuery storage
+    """Ckan Datastore storage
 
     Package implements
     [Tabular Storage](https://github.com/frictionlessdata/tableschema-py#storage)
