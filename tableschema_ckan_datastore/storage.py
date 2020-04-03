@@ -51,7 +51,7 @@ class Storage(tableschema.Storage):
         self.__dataset_id = dataset_id
         self.__api_key = api_key
         self.__descriptors = {}
-        self.__max_pages = 10
+        self.__max_pages = 100
         self.__bucket_cache = None
 
         # Create mapper

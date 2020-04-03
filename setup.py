@@ -25,9 +25,13 @@ INSTALL_REQUIRES = [
     'tableschema>=1.0'
 ]
 TESTS_REQUIRE = [
+    'mock',
     'pylama',
+    'pytest',
+    'pytest-cov',
     'tox',
-    'python-dotenv'
+    'python-dotenv',
+    'requests-mock'
 ]
 README = read('README.md')
 VERSION = read(PACKAGE, 'VERSION')
