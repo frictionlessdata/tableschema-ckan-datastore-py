@@ -130,6 +130,10 @@ $ make test
 
 Here described only breaking and the most important changes. The full changelog and documentation for all released versions could be found in nicely formatted [commit history](https://github.com/frictionlessdata/tableschema-ckan-datastore-py/commits/master).
 
+#### v1.1
+
+- Increase max size of a bucket to 100 resources
+
 #### v1.0
 
 - Initial driver implementation
