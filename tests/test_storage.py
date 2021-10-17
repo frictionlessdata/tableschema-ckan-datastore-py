@@ -6,30 +6,34 @@ from __future__ import unicode_literals
 
 import io
 import json
-import unittest
+# import unittest
 import tableschema
 from decimal import Decimal
 import datetime
 import requests_mock
+import pytest
 from tabulator import Stream
 from tableschema_ckan_datastore import Storage
 
 
 # Tests
 
-class TestStorage(unittest.TestCase):
+class TestStorage():
 
-    def setUp(self):
+    def setup_method(self):
         # Create storage
         base_url = 'https://demo.ckan.org/'
         self.storage = Storage(base_url=base_url,
                                dataset_id='my-dataset-id',
                                api_key='env:CKAN_API_KEY')
 
+    @pytest.fixture()
+    def mock_request(self):
+        return requests_mock.Mocker().__enter__()
+
     def test_storage_repr(self):
         assert str(self.storage) == 'Storage <https://demo.ckan.org>'
 
-    @requests_mock.mock()
     def test_storage_buckets(self, mock_request):
 
         mock_package_show_fp = "tests/mock_responses/package_show.json"
@@ -67,7 +71,6 @@ class TestStorage(unittest.TestCase):
         history = mock_request.request_history
         assert len(history) == 3
 
-    @requests_mock.mock()
     def test_storage_describe(self, mock_request):
 
         # Response gets the resource results
@@ -98,7 +101,6 @@ class TestStorage(unittest.TestCase):
         assert self.storage.describe('79843e49-7974-411c-8eb5-fb2d1111d707') \
             == expected_descriptor
 
-    @requests_mock.mock()
     def test_storage_delete(self, mock_request):
 
         mock_package_show_fp = "tests/mock_responses/package_show.json"
@@ -139,7 +141,6 @@ class TestStorage(unittest.TestCase):
         assert delete_request.json()['resource_id'] == \
             '79843e49-7974-411c-8eb5-fb2d1111d707'
 
-    @requests_mock.mock()
     def test_storage_delete_non_exists(self, mock_request):
         '''Attempt delete of non-existing record'''
         mock_package_show_fp = "tests/mock_responses/package_show.json"
@@ -165,14 +166,13 @@ class TestStorage(unittest.TestCase):
         # Delete buckets
 
         # Delete non existent bucket
-        with self.assertRaises(tableschema.exceptions.StorageError):
+        with pytest.raises(tableschema.exceptions.StorageError):
             self.storage.delete('non_existent')
 
         # delete endpoint was called
         history = mock_request.request_history
         assert len(history) == 3
 
-    @requests_mock.mock()
     def test_storage_delete_all(self, mock_request):
 
         mock_package_show_fp = "tests/mock_responses/package_show.json"
@@ -213,7 +213,6 @@ class TestStorage(unittest.TestCase):
         assert delete_request.json()['resource_id'] == \
             'bd79c992-40f0-454a-a0ff-887f84a792fb'
 
-    @requests_mock.mock()
     def test_storage_create_exists(self, mock_request):
         '''Datastore Records already exists of resource. Raise exception'''
 
@@ -242,12 +241,11 @@ class TestStorage(unittest.TestCase):
         comments_schema = \
             json.load(io.open('data/comments.json', encoding='utf-8'))
 
-        with self.assertRaises(tableschema.exceptions.StorageError):
+        with pytest.raises(tableschema.exceptions.StorageError):
             self.storage.create(['79843e49-7974-411c-8eb5-fb2d1111d707',
                                  'bd79c992-40f0-454a-a0ff-887f84a792fb'],
                                 [articles_schema, comments_schema])
 
-    @requests_mock.mock()
     def test_storage_create(self, mock_request):
 
         mock_package_show_fp = "tests/mock_responses/package_show.json"
@@ -283,37 +281,40 @@ class TestStorage(unittest.TestCase):
         assert create_request.url == \
             'https://demo.ckan.org/api/3/action/datastore_create'
 
-    @requests_mock.mock()
-    def test_storage_write(self, mock_request):
+    @pytest.mark.parametrize('generator', [True, False])
+    def test_storage_write(self, generator):
+        with requests_mock.Mocker() as mock_request:
+            # Response gets the resource results
+            mock_datastore_search_fp_03 = \
+                "tests/mock_responses/datastore_search_describe.json"
+            mock_datastore_search_03 = \
+                json.load(io.open(mock_datastore_search_fp_03, encoding='utf-8'))
+            mock_request.get('https://demo.ckan.org/api/3/action/datastore_search?resource_id=79843e49-7974-411c-8eb5-fb2d1111d707',  # noqa
+                            json=mock_datastore_search_03)
 
-        # Response gets the resource results
-        mock_datastore_search_fp_03 = \
-            "tests/mock_responses/datastore_search_describe.json"
-        mock_datastore_search_03 = \
-            json.load(io.open(mock_datastore_search_fp_03, encoding='utf-8'))
-        mock_request.get('https://demo.ckan.org/api/3/action/datastore_search?resource_id=79843e49-7974-411c-8eb5-fb2d1111d707',  # noqa
-                         json=mock_datastore_search_03)
+            mock_datastore_upsert_fp = \
+                "tests/mock_responses/datastore_upsert.json"
+            mock_datastore_upsert = \
+                json.load(io.open(mock_datastore_upsert_fp, encoding='utf-8'))
+            mock_request.post('https://demo.ckan.org/api/3/action/datastore_upsert',  # noqa
+                            json=mock_datastore_upsert)
 
-        mock_datastore_upsert_fp = \
-            "tests/mock_responses/datastore_upsert.json"
-        mock_datastore_upsert = \
-            json.load(io.open(mock_datastore_upsert_fp, encoding='utf-8'))
-        mock_request.post('https://demo.ckan.org/api/3/action/datastore_upsert',  # noqa
-                         json=mock_datastore_upsert)
+            # Write data
+            articles_data = \
+                Stream('data/articles.csv', headers=1, encoding='utf-8').open()
+            data = self.storage.write('79843e49-7974-411c-8eb5-fb2d1111d707',
+                                    articles_data, as_generator=generator)
+            if generator:
+                data = list(data)
+                assert len(data) == 3  # len of articles.csv
+            # create endpoint was called
+            history = mock_request.request_history
+            assert len(history) == 2
+            write_request = history[1]
+            assert write_request.url == \
+                'https://demo.ckan.org/api/3/action/datastore_upsert'
 
-        # Write data
-        articles_data = \
-            Stream('data/articles.csv', headers=1, encoding='utf-8').open()
-        self.storage.write('79843e49-7974-411c-8eb5-fb2d1111d707',
-                           articles_data)
-        # create endpoint was called
-        history = mock_request.request_history
-        assert len(history) == 2
-        write_request = history[1]
-        assert write_request.url == \
-            'https://demo.ckan.org/api/3/action/datastore_upsert'
 
-    @requests_mock.mock()
     def test_storage_read_iter(self, mock_request):
 
         # Response gets the resource descriptors

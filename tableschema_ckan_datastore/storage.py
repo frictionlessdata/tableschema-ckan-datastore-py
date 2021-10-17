@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import six
 import json
+import collections
 import tableschema
 
 from . import utils
@@ -211,13 +212,20 @@ class Storage(tableschema.Storage):
         rows = list(self.iter(bucket))
         return rows
 
-    def write(self, bucket, rows, method="upsert"):
+    def write(self, bucket, rows, method="upsert", as_generator=False):
+        if as_generator:
+            return self.write_aux(bucket, rows, method=method)
+        else:
+            collections.deque(self.write_aux(bucket, rows, method=method), maxlen=0)
+
+    def write_aux(self, bucket, rows, method="upsert"):
         schema = tableschema.Schema(self.describe(bucket))
         datastore_upsert_url = \
             "{}/datastore_upsert".format(self.__base_endpoint)
         records = []
         for r in rows:
             records.append(self.__mapper.convert_row(r, schema))
+            yield r
         params = {
             'resource_id': bucket,
             'method': method,
